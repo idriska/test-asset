@@ -396,7 +396,7 @@ spec:
         position: bottom
       relationType: onetoone
       dependent: false
-      primary: card_number
+      primary: email
       bucket:
         resourceFieldRef:
           schemaName: iyzico-card-7
@@ -450,10 +450,13 @@ spec:
       options:
         position: bottom
     item_transactions:
-      type: textarea
-      description: DO NOT TOUCH! IT WILL BE FILLED AUTOMATICALLY!
+      type: array
+      description: Description of the item_transactions input
       options:
         position: bottom
+      items:
+        title: Title of the items
+        type: string
   acl:
     write: true==true
     read: true==true

@@ -141,12 +141,15 @@ export async function payment(req, res) {
                 } else {
                     let status = 200;
                     if (result.status == "failure") status = 400;
-
+                    let transactionsId = [];
+                    result.itemTransactions.forEach(transaction => {
+                        transactionsId.push(transaction.paymentTransactionId);
+                    });
                     await updatePayData(
                         payData,
                         result.status,
                         result.paymentId,
-                        result.itemTransactions,
+                        transactionsId,
                         result.errorMessage
                     );
                     return res.status(status).send({ message: result });
@@ -178,7 +181,7 @@ async function updatePayData(payData, status, paymentId, itemTransactions, error
 
     payData.status = status;
     payData.payment_id = paymentId;
-    payData.item_transactions = String(itemTransactions);
+    payData.item_transactions = itemTransactions;
     payData.error_message = errorMessage;
 
     await Bucket.data
@@ -415,7 +418,7 @@ async function getPaymentData(payId) {
     }
 
     payRequest = replaceObject(payRequest);
-    console.log("PAY REQUEST", payRequest);
+
     if (payRequest.paymentCard) {
         delete payRequest.paymentCard.email;
         delete payRequest.paymentCard.cardAlias;
